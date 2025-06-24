@@ -163,21 +163,27 @@ body {
     margin: 0;
 }
 
-.login-form {
-    margin-bottom: 20px;
-}
+
 
 .form-group {
     position: relative;
     margin-bottom: 25px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--dark-color);
-    font-size: 0.95rem;
+/* Horizontal form tweaks */
+.login-form .row {
+  margin-bottom: 1rem;
+}
+
+.login-form label {
+  text-align: right;
+  font-weight: 600;
+}
+
+.password-toggle {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 35px;
 }
 
 .form-control {
