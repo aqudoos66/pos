@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare POS - Pharmacy Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #1a7f8e;
+            --secondary-color: #2d9e57;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary-color), #0d5a63);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            transition: all 0.3s;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            .sidebar.active {
+                margin-left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        
+        .bg-primary-light {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+        }
+        
+        .bg-success-light {
+            background-color: #e8f5e9;
+            color: var(--secondary-color);
+        }
+        
+        .bg-warning-light {
+            background-color: #fff8e1;
+            color: var(--warning-color);
+        }
+        
+        .bg-danger-light {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border-radius: 5px;
+        }
+        
+        .invoice-item {
+            border-bottom: 1px dashed #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .invoice-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .barcode-placeholder {
+            height: 60px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="p-3">
+                <h4 class="text-center mb-4">
+                    <i class="fas fa-clinic-medical me-2"></i>
+                    <span class="fw-bold">MediCare POS</span>
+                </h4>
+                <hr class="bg-light">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="inventory">
+                            <i class="fas fa-pills"></i> Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="billing">
+                            <i class="fas fa-cash-register"></i> Billing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="customers">
+                            <i class="fas fa-users"></i> Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="reports">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <!-- Top Navigation -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded mb-4">
+                <div class="container-fluid">
+                    <button class="btn mobile-menu-btn me-2" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="#">
+                        <i class="fas fa-clinic-medical me-2"></i>MediCare POS
+                    </a>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown me-3">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    3
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                <li><a class="dropdown-item" href="#">5 medicines expiring soon</a></li>
+                                <li><a class="dropdown-item" href="#">New order received</a></li>
+                                <li><a class="dropdown-item" href="#">Inventory low on Paracetamol</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> Admin
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Total Sales</h6>
+                                        <h3 class="mb-0">$24,580</h3>
+                                    </div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0"><span class="text-success"><i class="fas fa-arrow-up"></i> 12%</span> from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Inventory Value</h6>
+                                        <h3 class="mb-0">$18,750</h3>
+                                    </div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0"><span class="text-danger"><i class="fas fa-arrow-down"></i> 5%</span> from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Daily Transactions</h6>
+                                        <h3 class="mb-0">48</h3>
+                                    </div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0"><span class="text-success"><i class="fas fa-arrow-up"></i> 8%</span> from yesterday</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-danger-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Customers</h6>
+                                        <h3 class="mb-0">1,245</h3>
+                                    </div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0"><span class="text-success"><i class="fas fa-arrow-up"></i> 15%</span> from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="chart-container">
+                            <h5 class="mb-3">Sales Overview</h5>
+                            <div class="chart-placeholder">
+                                <i class="fas fa-chart-line me-2"></i> Monthly Sales Chart
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="chart-container">
+                            <h5 class="mb-3">Top Selling Medicines</h5>
+                            <div class="chart-placeholder">
+                                <i class="fas fa-pills me-2"></i> Top Products Chart
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Recent Transactions</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Invoice #</th>
+                                                <th>Customer</th>
+                                                <th>Amount</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>INV-2023-1052</td>
+                                                <td>John Smith</td>
+                                                <td>$125.50</td>
+                                                <td>Today, 10:45 AM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>INV-2023-1051</td>
+                                                <td>Sarah Johnson</td>
+                                                <td>$89.75</td>
+                                                <td>Today, 09:30 AM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>INV-2023-1050</td>
+                                                <td>Michael Brown</td>
+                                                <td>$215.00</td>
+                                                <td>Yesterday</td>
+                                            </tr>
+                                            <tr>
+                                                <td>INV-2023-1049</td>
+                                                <td>Emily Davis</td>
+                                                <td>$62.30</td>
+                                                <td>Yesterday</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Low Stock Alert</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Medicine</th>
+                                                <th>Batch No.</th>
+                                                <th>Stock</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Paracetamol 500mg</td>
+                                                <td>BATCH-2023-05</td>
+                                                <td><span class="badge bg-warning">12 left</span></td>
+                                                <td><button class="btn btn-sm btn-primary">Reorder</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Amoxicillin 250mg</td>
+                                                <td>BATCH-2023-07</td>
+                                                <td><span class="badge bg-danger">5 left</span></td>
+                                                <td><button class="btn btn-sm btn-primary">Reorder</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cetirizine 10mg</td>
+                                                <td>BATCH-2023-06</td>
+                                                <td><span class="badge bg-warning">8 left</span></td>
+                                                <td><button class="btn btn-sm btn-primary">Reorder</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Omeprazole 20mg</td>
+                                                <td>BATCH-2023-08</td>
+                                                <td><span class="badge bg-warning">15 left</span></td>
+                                                <td><button class="btn btn-sm btn-primary">Reorder</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inventory Management Section -->
+            <section id="inventory-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Medicine Inventory</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+                            <i class="fas fa-plus me-1"></i> Add Medicine
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="inventoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Medicine Name</th>
+                                        <th>Batch No.</th>
+                                        <th>Expiry Date</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Manufacturer</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Paracetamol 500mg</td>
+                                        <td>BATCH-2023-05</td>
+                                        <td>2024-06-30</td>
+                                        <td>120</td>
+                                        <td>$2.50</td>
+                                        <td>ABC Pharma</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="1"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Amoxicillin 250mg</td>
+                                        <td>BATCH-2023-07</td>
+                                        <td>2024-09-15</td>
+                                        <td>85</td>
+                                        <td>$5.75</td>
+                                        <td>XYZ Pharma</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="2"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="2"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Cetirizine 10mg</td>
+                                        <td>BATCH-2023-06</td>
+                                        <td>2024-05-20</td>
+                                        <td>150</td>
+                                        <td>$3.25</td>
+                                        <td>MediCorp</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="3"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="3"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Omeprazole 20mg</td>
+                                        <td>BATCH-2023-08</td>
+                                        <td>2024-11-30</td>
+                                        <td>90</td>
+                                        <td>$4.50</td>
+                                        <td>PharmaPlus</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="4"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="4"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Ibuprofen 400mg</td>
+                                        <td>BATCH-2023-09</td>
+                                        <td>2024-08-15</td>
+                                        <td>200</td>
+                                        <td>$3.00</td>
+                                        <td>HealthCare Ltd</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-btn" data-id="5"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="5"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Billing Section -->
+            <section id="billing-section" style="display: none;">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">New Sale</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Customer</label>
+                                        <select class="form-select">
+                                            <option selected>Walk-in Customer</option>
+                                            <option>John Smith</option>
+                                            <option>Sarah Johnson</option>
+                                            <option>Michael Brown</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date</label>
+                                        <input type="date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                                    </div>
+                                </div>
+                                
+                                <div class="barcode-placeholder">
+                                    <i class="fas fa-barcode me-2"></i> Scan barcode or search medicine below
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Search medicine by name or code" id="medicineSearch">
+                                    <button class="btn btn-primary" type="button" id="searchBtn">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                                
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-hover" id="medicineTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Medicine</th>
+                                                <th>Batch</th>
+                                                <th>Price</th>
+                                                <th>Stock</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Paracetamol 500mg</td>
+                                                <td>BATCH-2023-05</td>
+                                                <td>$2.50</td>
+                                                <td>120</td>
+                                                <td><button class="btn btn-sm btn-success add-to-cart">Add</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Amoxicillin 250mg</td>
+                                                <td>BATCH-2023-07</td>
+                                                <td>$5.75</td>
+                                                <td>85</td>
+                                                <td><button class="btn btn-sm btn-success add-to-cart">Add</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cetirizine 10mg</td>
+                                                <td>BATCH-2023-06</td>
+                                                <td>$3.25</td>
+                                                <td>150</td>
+                                                <td><button class="btn btn-sm btn-success add-to-cart">Add</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <h5 class="mb-3">Invoice Items</h5>
+                                <div id="invoiceItems">
+                                    <!-- Items will be added here dynamically -->
+                                    <div class="alert alert-info">No items added yet. Search and add medicines above.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Invoice Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select class="form-select">
+                                        <option selected>Cash</option>
+                                        <option>Credit Card</option>
+                                        <option>Debit Card</option>
+                                        <option>Mobile Payment</option>
+                                        <option>Insurance</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Discount</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="0" value="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="mb-2 d-flex justify-content-between">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">$0.00</span>
+                                </div>
+                                <div class="mb-2 d-flex justify-content-between">
+                                    <span>Discount:</span>
+                                    <span id="discount">$0.00</span>
+                                </div>
+                                <div class="mb-2 d-flex justify-content-between">
+                                    <span>Tax (5%):</span>
+                                    <span id="tax">$0.00</span>
+                                </div>
+                                <div class="mb-3 d-flex justify-content-between fw-bold">
+                                    <span>Total:</span>
+                                    <span id="total">$0.00</span>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" id="processPaymentBtn">
+                                        <i class="fas fa-credit-card me-1"></i> Process Payment
+                                    </button>
+                                    <button class="btn btn-success" id="printInvoiceBtn" disabled>
+                                        <i class="fas fa-print me-1"></i> Print Invoice
+                                    </button>
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-1"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customers Section -->
+            <section id="customers-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Customer Management</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                            <i class="fas fa-plus me-1"></i> Add Customer
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="customersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>John Smith</td>
+                                        <td>(555) 123-4567</td>
+                                        <td>john.smith@example.com</td>
+                                        <td>123 Main St, City</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-customer-btn" data-id="1"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-customer-btn" data-id="1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>(555) 987-6543</td>
+                                        <td>sarah.j@example.com</td>
+                                        <td>456 Oak Ave, Town</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-customer-btn" data-id="2"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-customer-btn" data-id="2"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Michael Brown</td>
+                                        <td>(555) 456-7890</td>
+                                        <td>michael.b@example.com</td>
+                                        <td>789 Pine Rd, Village</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-customer-btn" data-id="3"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-customer-btn" data-id="3"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Emily Davis</td>
+                                        <td>(555) 321-6547</td>
+                                        <td>emily.d@example.com</td>
+                                        <td>321 Elm St, Hamlet</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-customer-btn" data-id="4"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-danger delete-customer-btn" data-id="4"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Sales Report</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Date Range</label>
+                                    <div class="input-group">
+                                        <input type="date" class="form-control" value="<?php echo date('Y-m-01'); ?>">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                                    </div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-bar me-2"></i> Sales Chart
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Top Selling Medicines</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Medicine</th>
+                                                <th>Quantity Sold</th>
+                                                <th>Total Revenue</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Paracetamol 500mg</td>
+                                                <td>245</td>
+                                                <td>$612.50</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Amoxicillin 250mg</td>
+                                                <td>187</td>
+                                                <td>$1,075.25</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cetirizine 10mg</td>
+                                                <td>156</td>
+                                                <td>$507.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Omeprazole 20mg</td>
+                                                <td>132</td>
+                                                <td>$594.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ibuprofen 400mg</td>
+                                                <td>120</td>
+                                                <td>$360.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Detailed Sales Report</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Invoice #</th>
+                                                <th>Customer</th>
+                                                <th>Items</th>
+                                                <th>Subtotal</th>
+                                                <th>Tax</th>
+                                                <th>Discount</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><?php echo date('Y-m-d'); ?></td>
+                                                <td>INV-2023-1052</td>
+                                                <td>John Smith</td>
+                                                <td>3</td>
+                                                <td>$125.50</td>
+                                                <td>$6.28</td>
+                                                <td>$0.00</td>
+                                                <td>$131.78</td>
+                                            </tr>
+                                            <tr>
+                                                <td><?php echo date('Y-m-d'); ?></td>
+                                                <td>INV-2023-1051</td>
+                                                <td>Sarah Johnson</td>
+                                                <td>2</td>
+                                                <td>$89.75</td>
+                                                <td>$4.49</td>
+                                                <td>$5.00</td>
+                                                <td>$89.24</td>
+                                            </tr>
+                                            <tr>
+                                                <td><?php echo date('Y-m-d', strtotime('-1 day')); ?></td>
+                                                <td>INV-2023-1050</td>
+                                                <td>Michael Brown</td>
+                                                <td>5</td>
+                                                <td>$215.00</td>
+                                                <td>$10.75</td>
+                                                <td>$0.00</td>
+                                                <td>$225.75</td>
+                                            </tr>
+                                            <tr>
+                                                <td><?php echo date('Y-m-d', strtotime('-1 day')); ?></td>
+                                                <td>INV-2023-1049</td>
+                                                <td>Emily Davis</td>
+                                                <td>1</td>
+                                                <td>$62.30</td>
+                                                <td>$3.12</td>
+                                                <td>$0.00</td>
+                                                <td>$65.42</td>
+                                            </tr>
+                                            <tr>
+                                                <td><?php echo date('Y-m-d', strtotime('-2 days')); ?></td>
+                                                <td>INV-2023-1048</td>
+                                                <td>Walk-in Customer</td>
+                                                <td>4</td>
+                                                <td>$178.90</td>
+                                                <td>$8.95</td>
+                                                <td>$10.00</td>
+                                                <td>$177.85</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Add Medicine Modal -->
+    <div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMedicineModalLabel">Add New Medicine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMedicineForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="medicineName" class="form-label">Medicine Name</label>
+                                <input type="text" class="form-control" id="medicineName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="batchNo" class="form-label">Batch Number</label>
+                                <input type="text" class="form-control" id="batchNo" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control" id="expiryDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="manufacturer" class="form-label">Manufacturer</label>
+                                <input type="text" class="form-control" id="manufacturer" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="price" class="form-label">Price (per unit)</label>
+                                <input type="number" step="0.01" class="form-control" id="price" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category">
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Capsule">Capsule</option>
+                                    <option value="Syrup">Syrup</option>
+                                    <option value="Injection">Injection</option>
+                                    <option value="Ointment">Ointment</option>
+                                    <option value="Drops">Drops</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveMedicineBtn">Save Medicine</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Medicine Modal -->
+    <div class="modal fade" id="editMedicineModal" tabindex="-1" aria-labelledby="editMedicineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMedicineModalLabel">Edit Medicine</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editMedicineForm">
+                        <input type="hidden" id="editMedicineId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editMedicineName" class="form-label">Medicine Name</label>
+                                <input type="text" class="form-control" id="editMedicineName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editBatchNo" class="form-label">Batch Number</label>
+                                <input type="text" class="form-control" id="editBatchNo" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editExpiryDate" class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control" id="editExpiryDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editManufacturer" class="form-label">Manufacturer</label>
+                                <input type="text" class="form-control" id="editManufacturer" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="editQuantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="editQuantity" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editPrice" class="form-label">Price (per unit)</label>
+                                <input type="number" step="0.01" class="form-control" id="editPrice" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editCategory" class="form-label">Category</label>
+                                <select class="form-select" id="editCategory">
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Capsule">Capsule</option>
+                                    <option value="Syrup">Syrup</option>
+                                    <option value="Injection">Injection</option>
+                                    <option value="Ointment">Ointment</option>
+                                    <option value="Drops">Drops</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateMedicineBtn">Update Medicine</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Medicine Confirmation Modal -->
+    <div class="modal fade" id="deleteMedicineModal" tabindex="-1" aria-labelledby="deleteMedicineModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteMedicineModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this medicine? This action cannot be undone.</p>
+                    <input type="hidden" id="deleteMedicineId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteMedicineBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCustomerForm">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customerPhone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="customerPhone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customerEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="customerEmail">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="customerAddress" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerGender" class="form-label">Gender</label>
+                            <select class="form-select" id="customerGender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCustomerForm">
+                        <input type="hidden" id="editCustomerId">
+                        <div class="mb-3">
+                            <label for="editCustomerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="editCustomerName" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editCustomerPhone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="editCustomerPhone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editCustomerEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editCustomerEmail">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCustomerAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="editCustomerAddress" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCustomerGender" class="form-label">Gender</label>
+                            <select class="form-select" id="editCustomerGender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateCustomerBtn">Update Customer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Customer Confirmation Modal -->
+    <div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCustomerModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this customer? This action cannot be undone.</p>
+                    <input type="hidden" id="deleteCustomerId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteCustomerBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="invoiceModalLabel">Invoice #INV-2023-1053</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="invoice-container p-4" id="invoiceToPrint">
+                        <div class="text-center mb-4">
+                            <h3>MediCare Pharmacy</h3>
+                            <p class="mb-0">123 Health Street, Medical City</p>
+                            <p class="mb-0">Phone: (555) 123-4567 | Email: info@medicare.com</p>
+                            <p>GSTIN: 12ABCDE1234F1Z1</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Bill To:</h5>
+                                <p class="mb-1"><strong>John Smith</strong></p>
+                                <p class="mb-1">123 Main Street</p>
+                                <p class="mb-1">City, State 12345</p>
+                                <p class="mb-1">Phone: (555) 987-6543</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p class="mb-1"><strong>Invoice #:</strong> INV-2023-1053</p>
+                                <p class="mb-1"><strong>Date:</strong> <?php echo date('F j, Y'); ?></p>
+                                <p class="mb-1"><strong>Time:</strong> <?php echo date('h:i A'); ?></p>
+                                <p><strong>Cashier:</strong> Admin</p>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Medicine</th>
+                                        <th>Batch No.</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoiceItemsTable">
+                                    <!-- Invoice items will be added here -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
+                                        <td id="invoiceSubtotal">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-end"><strong>Tax (5%):</strong></td>
+                                        <td id="invoiceTax">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-end"><strong>Discount:</strong></td>
+                                        <td id="invoiceDiscount">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                        <td id="invoiceTotal">$0.00</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="border p-2 mb-3">
+                                    <h6>Payment Method:</h6>
+                                    <p id="invoicePaymentMethod">Cash</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border p-2 mb-3">
+                                    <h6>Amount Received:</h6>
+                                    <p id="invoiceAmountReceived">$0.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-1">Thank you for your purchase!</p>
+                            <p>For any queries, please contact us within 7 days</p>
+                            <p class="text-muted">This is a computer generated invoice. No signature required.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="printInvoiceModalBtn">
+                        <i class="fas fa-print me-1"></i> Print Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+        
+        // Inventory elements
+        const saveMedicineBtn = document.getElementById('saveMedicineBtn');
+        const updateMedicineBtn = document.getElementById('updateMedicineBtn');
+        const confirmDeleteMedicineBtn = document.getElementById('confirmDeleteMedicineBtn');
+        const editBtns = document.querySelectorAll('.edit-btn');
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        
+        // Customer elements
+        const saveCustomerBtn = document.getElementById('saveCustomerBtn');
+        const updateCustomerBtn = document.getElementById('updateCustomerBtn');
+        const confirmDeleteCustomerBtn = document.getElementById('confirmDeleteCustomerBtn');
+        const editCustomerBtns = document.querySelectorAll('.edit-customer-btn');
+        const deleteCustomerBtns = document.querySelectorAll('.delete-customer-btn');
+        
+        // Billing elements
+        const medicineSearch = document.getElementById('medicineSearch');
+        const searchBtn = document.getElementById('searchBtn');
+        const addToCartBtns = document.querySelectorAll('.add-to-cart');
+        const invoiceItems = document.getElementById('invoiceItems');
+        const subtotalEl = document.getElementById('subtotal');
+        const discountEl = document.getElementById('discount');
+        const taxEl = document.getElementById('tax');
+        const totalEl = document.getElementById('total');
+        const processPaymentBtn = document.getElementById('processPaymentBtn');
+        const printInvoiceBtn = document.getElementById('printInvoiceBtn');
+        const printInvoiceModalBtn = document.getElementById('printInvoiceModalBtn');
+        
+        // Data
+        let medicines = [
+            { id: 1, name: 'Paracetamol 500mg', batchNo: 'BATCH-2023-05', expiryDate: '2024-06-30', quantity: 120, price: 2.50, manufacturer: 'ABC Pharma', category: 'Tablet', description: 'Pain reliever and fever reducer' },
+            { id: 2, name: 'Amoxicillin 250mg', batchNo: 'BATCH-2023-07', expiryDate: '2024-09-15', quantity: 85, price: 5.75, manufacturer: 'XYZ Pharma', category: 'Capsule', description: 'Antibiotic for bacterial infections' },
+            { id: 3, name: 'Cetirizine 10mg', batchNo: 'BATCH-2023-06', expiryDate: '2024-05-20', quantity: 150, price: 3.25, manufacturer: 'MediCorp', category: 'Tablet', description: 'Antihistamine for allergies' },
+            { id: 4, name: 'Omeprazole 20mg', batchNo: 'BATCH-2023-08', expiryDate: '2024-11-30', quantity: 90, price: 4.50, manufacturer: 'PharmaPlus', category: 'Capsule', description: 'Proton pump inhibitor for acid reflux' },
+            { id: 5, name: 'Ibuprofen 400mg', batchNo: 'BATCH-2023-09', expiryDate: '2024-08-15', quantity: 200, price: 3.00, manufacturer: 'HealthCare Ltd', category: 'Tablet', description: 'NSAID for pain and inflammation' }
+        ];
+        
+        let customers = [
+            { id: 1, name: 'John Smith', phone: '(555) 123-4567', email: 'john.smith@example.com', address: '123 Main St, City', gender: 'Male' },
+            { id: 2, name: 'Sarah Johnson', phone: '(555) 987-6543', email: 'sarah.j@example.com', address: '456 Oak Ave, Town', gender: 'Female' },
+            { id: 3, name: 'Michael Brown', phone: '(555) 456-7890', email: 'michael.b@example.com', address: '789 Pine Rd, Village', gender: 'Male' },
+            { id: 4, name: 'Emily Davis', phone: '(555) 321-6547', email: 'emily.d@example.com', address: '321 Elm St, Hamlet', gender: 'Female' }
+        ];
+        
+        let cartItems = [];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    
+                    // Hide all sections
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show selected section
+                    document.getElementById(sectionId).style.display = 'block';
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Initialize inventory table
+            initializeInventoryTable();
+            
+            // Initialize customer table
+            initializeCustomerTable();
+            
+            // Initialize billing section
+            initializeBillingSection();
+            
+            // Medicine form handlers
+            setupMedicineFormHandlers();
+            
+            // Customer form handlers
+            setupCustomerFormHandlers();
+            
+            // Billing form handlers
+            setupBillingFormHandlers();
+        });
+        
+        // Initialize Inventory Table
+        function initializeInventoryTable() {
+            // This is already populated in HTML, but in a real app we would generate it from data
+        }
+        
+        // Initialize Customer Table
+        function initializeCustomerTable() {
+            // This is already populated in HTML, but in a real app we would generate it from data
+        }
+        
+        // Initialize Billing Section
+        function initializeBillingSection() {
+            // Add event listeners to all "Add to Cart" buttons
+            addToCartBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const medicineName = row.cells[0].textContent;
+                    const batchNo = row.cells[1].textContent;
+                    const price = parseFloat(row.cells[2].textContent.replace('$', ''));
+                    const stock = parseInt(row.cells[3].textContent);
+                    
+                    // Check if item already in cart
+                    const existingItem = cartItems.find(item => item.name === medicineName && item.batchNo === batchNo);
+                    
+                    if (existingItem) {
+                        if (existingItem.quantity < stock) {
+                            existingItem.quantity += 1;
+                            existingItem.total = existingItem.quantity * existingItem.price;
+                        } else {
+                            alert('Cannot add more than available stock');
+                        }
+                    } else {
+                        cartItems.push({
+                            name: medicineName,
+                            batchNo: batchNo,
+                            price: price,
+                            quantity: 1,
+                            total: price
+                        });
+                    }
+                    
+                    updateInvoiceItems();
+                });
+            });
+        }
+        
+        // Update Invoice Items
+        function updateInvoiceItems() {
+            if (cartItems.length === 0) {
+                invoiceItems.innerHTML = '<div class="alert alert-info">No items added yet. Search and add medicines above.</div>';
+                subtotalEl.textContent = '$0.00';
+                discountEl.textContent = '$0.00';
+                taxEl.textContent = '$0.00';
+                totalEl.textContent = '$0.00';
+                printInvoiceBtn.disabled = true;
+                return;
+            }
+            
+            let subtotal = 0;
+            let html = '';
+            
+            cartItems.forEach((item, index) => {
+                subtotal += item.total;
+                html += `
+                    <div class="invoice-item">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">${item.name}</h6>
+                            <button class="btn btn-sm btn-danger remove-item" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small mb-1">
+                            <span>Batch: ${item.batchNo}</span>
+                            <span>Price: $${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="input-group input-group-sm" style="width: 120px;">
+                                <button class="btn btn-outline-secondary decrease-qty" type="button" data-index="${index}">-</button>
+                                <input type="number" class="form-control text-center" value="${item.quantity}" min="1" data-index="${index}">
+                                <button class="btn btn-outline-secondary increase-qty" type="button" data-index="${index}">+</button>
+                            </div>
+                            <span class="fw-bold">$${item.total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            invoiceItems.innerHTML = html;
+            
+            // Calculate totals
+            const discount = 0; // In a real app, this would come from the discount input
+            const tax = subtotal * 0.05; // 5% tax
+            const total = subtotal + tax - discount;
+            
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            discountEl.textContent = `$${discount.toFixed(2)}`;
+            taxEl.textContent = `$${tax.toFixed(2)}`;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+            
+            printInvoiceBtn.disabled = false;
+            
+            // Add event listeners to quantity controls
+            document.querySelectorAll('.decrease-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    if (cartItems[index].quantity > 1) {
+                        cartItems[index].quantity -= 1;
+                        cartItems[index].total = cartItems[index].quantity * cartItems[index].price;
+                        updateInvoiceItems();
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.increase-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    // In a real app, we would check stock availability
+                    cartItems[index].quantity += 1;
+                    cartItems[index].total = cartItems[index].quantity * cartItems[index].price;
+                    updateInvoiceItems();
+                });
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    cartItems.splice(index, 1);
+                    updateInvoiceItems();
+                });
+            });
+            
+            document.querySelectorAll('.invoice-item input[type="number"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const newQty = parseInt(this.value);
+                    if (newQty > 0) {
+                        cartItems[index].quantity = newQty;
+                        cartItems[index].total = cartItems[index].quantity * cartItems[index].price;
+                        updateInvoiceItems();
+                    } else {
+                        this.value = cartItems[index].quantity;
+                    }
+                });
+            });
+        }
+        
+        // Setup Medicine Form Handlers
+        function setupMedicineFormHandlers() {
+            // Save new medicine
+            saveMedicineBtn.addEventListener('click', function() {
+                // In a real app, we would validate the form first
+                const newId = medicines.length > 0 ? Math.max(...medicines.map(m => m.id)) + 1 : 1;
+                
+                const newMedicine = {
+                    id: newId,
+                    name: document.getElementById('medicineName').value,
+                    batchNo: document.getElementById('batchNo').value,
+                    expiryDate: document.getElementById('expiryDate').value,
+                    quantity: parseInt(document.getElementById('quantity').value),
+                    price: parseFloat(document.getElementById('price').value),
+                    manufacturer: document.getElementById('manufacturer').value,
+                    category: document.getElementById('category').value,
+                    description: document.getElementById('description').value
+                };
+                
+                medicines.push(newMedicine);
+                
+                // Add to table
+                const inventoryTable = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+                const newRow = inventoryTable.insertRow();
+                
+                newRow.innerHTML = `
+                    <td>${newId}</td>
+                    <td>${newMedicine.name}</td>
+                    <td>${newMedicine.batchNo}</td>
+                    <td>${newMedicine.expiryDate}</td>
+                    <td>${newMedicine.quantity}</td>
+                    <td>$${newMedicine.price.toFixed(2)}</td>
+                    <td>${newMedicine.manufacturer}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning edit-btn" data-id="${newId}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${newId}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                // Add event listeners to new buttons
+                newRow.querySelector('.edit-btn').addEventListener('click', function() {
+                    openEditMedicineModal(parseInt(this.getAttribute('data-id')));
+                });
+                
+                newRow.querySelector('.delete-btn').addEventListener('click', function() {
+                    document.getElementById('deleteMedicineId').value = this.getAttribute('data-id');
+                    new bootstrap.Modal(document.getElementById('deleteMedicineModal')).show();
+                });
+                
+                // Close modal and reset form
+                bootstrap.Modal.getInstance(document.getElementById('addMedicineModal')).hide();
+                document.getElementById('addMedicineForm').reset();
+            });
+            
+            // Update medicine
+            updateMedicineBtn.addEventListener('click', function() {
+                const medicineId = parseInt(document.getElementById('editMedicineId').value);
+                const medicineIndex = medicines.findIndex(m => m.id === medicineId);
+                
+                if (medicineIndex !== -1) {
+                    medicines[medicineIndex] = {
+                        id: medicineId,
+                        name: document.getElementById('editMedicineName').value,
+                        batchNo: document.getElementById('editBatchNo').value,
+                        expiryDate: document.getElementById('editExpiryDate').value,
+                        quantity: parseInt(document.getElementById('editQuantity').value),
+                        price: parseFloat(document.getElementById('editPrice').value),
+                        manufacturer: document.getElementById('editManufacturer').value,
+                        category: document.getElementById('editCategory').value,
+                        description: document.getElementById('editDescription').value
+                    };
+                    
+                    // Update table row
+                    const rows = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0].rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        if (parseInt(rows[i].cells[0].textContent) === medicineId) {
+                            rows[i].cells[1].textContent = medicines[medicineIndex].name;
+                            rows[i].cells[2].textContent = medicines[medicineIndex].batchNo;
+                            rows[i].cells[3].textContent = medicines[medicineIndex].expiryDate;
+                            rows[i].cells[4].textContent = medicines[medicineIndex].quantity;
+                            rows[i].cells[5].textContent = `$${medicines[medicineIndex].price.toFixed(2)}`;
+                            rows[i].cells[6].textContent = medicines[medicineIndex].manufacturer;
+                            break;
+                        }
+                    }
+                    
+                    bootstrap.Modal.getInstance(document.getElementById('editMedicineModal')).hide();
+                }
+            });
+            
+            // Delete medicine
+            confirmDeleteMedicineBtn.addEventListener('click', function() {
+                const medicineId = parseInt(document.getElementById('deleteMedicineId').value);
+                const medicineIndex = medicines.findIndex(m => m.id === medicineId);
+                
+                if (medicineIndex !== -1) {
+                    medicines.splice(medicineIndex, 1);
+                    
+                    // Remove from table
+                    const rows = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0].rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        if (parseInt(rows[i].cells[0].textContent) === medicineId) {
+                            rows[i].remove();
+                            break;
+                        }
+                    }
+                    
+                    bootstrap.Modal.getInstance(document.getElementById('deleteMedicineModal')).hide();
+                }
+            });
+            
+            // Edit buttons
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    openEditMedicineModal(parseInt(this.getAttribute('data-id')));
+                });
+            });
+            
+            // Delete buttons
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('deleteMedicineId').value = this.getAttribute('data-id');
+                    new bootstrap.Modal(document.getElementById('deleteMedicineModal')).show();
+                });
+            });
+        }
+        
+        // Open Edit Medicine Modal
+        function openEditMedicineModal(medicineId) {
+            const medicine = medicines.find(m => m.id === medicineId);
+            
+            if (medicine) {
+                document.getElementById('editMedicineId').value = medicine.id;
+                document.getElementById('editMedicineName').value = medicine.name;
+                document.getElementById('editBatchNo').value = medicine.batchNo;
+                document.getElementById('editExpiryDate').value = medicine.expiryDate;
+                document.getElementById('editQuantity').value = medicine.quantity;
+                document.getElementById('editPrice').value = medicine.price;
+                document.getElementById('editManufacturer').value = medicine.manufacturer;
+                document.getElementById('editCategory').value = medicine.category;
+                document.getElementById('editDescription').value = medicine.description;
+                
+                new bootstrap.Modal(document.getElementById('editMedicineModal')).show();
+            }
+        }
+        
+        // Setup Customer Form Handlers
+        function setupCustomerFormHandlers() {

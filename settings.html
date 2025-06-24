@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare POS - Settings</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="settings-style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="p-3">
+                <h4 class="text-center mb-4">
+                    <i class="fas fa-clinic-medical me-2"></i>
+                    <span class="fw-bold">MediCare POS</span>
+                </h4>
+                <hr class="bg-light">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#inventory">
+                            <i class="fas fa-pills"></i> Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#billing">
+                            <i class="fas fa-cash-register"></i> Billing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#customers">
+                            <i class="fas fa-users"></i> Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#reports">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="settings.html">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin/index.html">
+                            <i class="fas fa-user-shield"></i> Admin Panel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <!-- Top Navigation -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded mb-4">
+                <div class="container-fluid">
+                    <button class="btn mobile-menu-btn me-2" id="mobile-menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="index.html">
+                        <i class="fas fa-clinic-medical me-2"></i>MediCare POS
+                    </a>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown me-3">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    3
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                <li><a class="dropdown-item" href="#">5 medicines expiring soon</a></li>
+                                <li><a class="dropdown-item" href="#">New order received</a></li>
+                                <li><a class="dropdown-item" href="#">Inventory low on Paracetamol</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i> <span id="currentUserName">Admin</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Settings Content -->
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2><i class="fas fa-cog me-3"></i>System Settings</h2>
+                    <p class="text-muted">Configure your MediCare POS system preferences and options</p>
+                </div>
+
+                <!-- Settings Navigation Tabs -->
+                <ul class="nav nav-tabs settings-tabs" id="settingsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                            <i class="fas fa-sliders-h me-2"></i>General
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pharmacy-tab" data-bs-toggle="tab" data-bs-target="#pharmacy" type="button" role="tab">
+                            <i class="fas fa-clinic-medical me-2"></i>Pharmacy Info
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab">
+                            <i class="fas fa-cash-register me-2"></i>POS Settings
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="receipt-tab" data-bs-toggle="tab" data-bs-target="#receipt" type="button" role="tab">
+                            <i class="fas fa-receipt me-2"></i>Receipt Settings
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="backup-tab" data-bs-toggle="tab" data-bs-target="#backup" type="button" role="tab">
+                            <i class="fas fa-database me-2"></i>Backup & Data
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                            <i class="fas fa-shield-alt me-2"></i>Security
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Settings Tab Content -->
+                <div class="tab-content settings-content" id="settingsTabContent">
+                    <!-- General Settings -->
+                    <div class="tab-pane fade show active" id="general" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-sliders-h me-2"></i>General Settings</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Language</label>
+                                        <select class="form-select" id="language">
+                                            <option value="en">English</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Currency</label>
+                                        <select class="form-select" id="currency">
+                                            <option value="USD">USD ($)</option>
+                                            <option value="EUR">EUR (€)</option>
+                                            <option value="GBP">GBP (£)</option>
+                                            <option value="INR">INR (₹)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Date Format</label>
+                                        <select class="form-select" id="dateFormat">
+                                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Time Format</label>
+                                        <select class="form-select" id="timeFormat">
+                                            <option value="12">12 Hour (AM/PM)</option>
+                                            <option value="24">24 Hour</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="darkMode">
+                                    <label class="form-check-label" for="darkMode">
+                                        <i class="fas fa-moon me-2"></i>Enable Dark Mode
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="notifications" checked>
+                                    <label class="form-check-label" for="notifications">
+                                        <i class="fas fa-bell me-2"></i>Enable Notifications
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pharmacy Information -->
+                    <div class="tab-pane fade" id="pharmacy" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-clinic-medical me-2"></i>Pharmacy Information</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Pharmacy Name</label>
+                                        <input type="text" class="form-control" id="pharmacyName" value="MediCare Pharmacy">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">License Number</label>
+                                        <input type="text" class="form-control" id="licenseNumber" value="PH-2023-001">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <label class="setting-label">Address</label>
+                                <textarea class="form-control" id="pharmacyAddress" rows="3">123 Healthcare Street, Medical District, City, State 12345</textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="pharmacyPhone" value="+1 (555) 123-4567">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Email</label>
+                                        <input type="email" class="form-control" id="pharmacyEmail" value="info@medicarepos.com">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Tax ID</label>
+                                        <input type="text" class="form-control" id="taxId" value="TAX-123456789">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Website</label>
+                                        <input type="url" class="form-control" id="pharmacyWebsite" value="https://www.medicarepos.com">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- POS Settings -->
+                    <div class="tab-pane fade" id="pos" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-cash-register me-2"></i>POS Settings</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Default Tax Rate (%)</label>
+                                        <input type="number" class="form-control" id="taxRate" value="8.5" step="0.1" min="0" max="100">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Discount Limit (%)</label>
+                                        <input type="number" class="form-control" id="discountLimit" value="20" min="0" max="100">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="autoCalculateTax" checked>
+                                    <label class="form-check-label" for="autoCalculateTax">
+                                        <i class="fas fa-calculator me-2"></i>Auto Calculate Tax
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="requireCustomerInfo">
+                                    <label class="form-check-label" for="requireCustomerInfo">
+                                        <i class="fas fa-user-check me-2"></i>Require Customer Information
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="allowPartialPayment" checked>
+                                    <label class="form-check-label" for="allowPartialPayment">
+                                        <i class="fas fa-coins me-2"></i>Allow Partial Payments
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <label class="setting-label">Low Stock Alert Threshold</label>
+                                <input type="number" class="form-control" id="lowStockThreshold" value="10" min="1">
+                                <small class="form-text text-muted">Alert when stock falls below this number</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Receipt Settings -->
+                    <div class="tab-pane fade" id="receipt" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-receipt me-2"></i>Receipt Settings</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Receipt Width (mm)</label>
+                                        <select class="form-select" id="receiptWidth">
+                                            <option value="58">58mm (Small)</option>
+                                            <option value="80" selected>80mm (Standard)</option>
+                                            <option value="110">110mm (Large)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-group">
+                                        <label class="setting-label">Receipt Template</label>
+                                        <select class="form-select" id="receiptTemplate">
+                                            <option value="standard" selected>Standard</option>
+                                            <option value="minimal">Minimal</option>
+                                            <option value="detailed">Detailed</option>
+                                            <option value="pharmacy">Pharmacy Specific</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="printLogo" checked>
+                                    <label class="form-check-label" for="printLogo">
+                                        <i class="fas fa-image me-2"></i>Print Logo on Receipt
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="printBarcode" checked>
+                                    <label class="form-check-label" for="printBarcode">
+                                        <i class="fas fa-barcode me-2"></i>Print Barcode on Receipt
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="autoPrint">
+                                    <label class="form-check-label" for="autoPrint">
+                                        <i class="fas fa-print me-2"></i>Auto Print Receipt After Sale
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <label class="setting-label">Receipt Footer Message</label>
+                                <textarea class="form-control" id="receiptFooter" rows="3">Thank you for choosing MediCare Pharmacy!
+Visit us again for all your healthcare needs.
+www.medicarepos.com</textarea>
+                            </div>
+
+                            <div class="setting-group">
+                                <label class="setting-label">Receipt Storage Folder</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="receiptFolder" value="receipts" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="selectReceiptFolder()">
+                                        <i class="fas fa-folder-open"></i> Browse
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">Receipts will be saved as PNG images in this folder</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Data -->
+                    <div class="tab-pane fade" id="backup" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-database me-2"></i>Backup & Data Management</h4>
+                            
+                            <div class="backup-section">
+                                <h5><i class="fas fa-cloud-upload-alt me-2"></i>Data Backup</h5>
+                                <p class="text-muted">Backup your pharmacy data to prevent data loss</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-primary w-100 mb-3" onclick="createBackup()">
+                                            <i class="fas fa-download me-2"></i>Create Backup
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success w-100 mb-3" onclick="restoreBackup()">
+                                            <i class="fas fa-upload me-2"></i>Restore Backup
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="autoBackup">
+                                        <label class="form-check-label" for="autoBackup">
+                                            <i class="fas fa-clock me-2"></i>Enable Automatic Backup
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <label class="setting-label">Backup Frequency</label>
+                                    <select class="form-select" id="backupFrequency">
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly" selected>Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="data-section">
+                                <h5><i class="fas fa-file-export me-2"></i>Data Export</h5>
+                                <p class="text-muted">Export your data for reporting or migration</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 mb-2" onclick="exportData('inventory')">
+                                            <i class="fas fa-pills me-2"></i>Export Inventory
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 mb-2" onclick="exportData('customers')">
+                                            <i class="fas fa-users me-2"></i>Export Customers
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 mb-2" onclick="exportData('sales')">
+                                            <i class="fas fa-chart-line me-2"></i>Export Sales
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="reset-section">
+                                <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Reset Data</h5>
+                                <p class="text-muted text-danger">Warning: This action cannot be undone</p>
+                                
+                                <button class="btn btn-danger" onclick="resetAllData()">
+                                    <i class="fas fa-trash-alt me-2"></i>Reset All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="tab-pane fade" id="security" role="tabpanel">
+                        <div class="settings-section">
+                            <h4><i class="fas fa-shield-alt me-2"></i>Security Settings</h4>
+                            
+                            <div class="security-section">
+                                <h5><i class="fas fa-key me-2"></i>Password Policy</h5>
+                                
+                                <div class="setting-group">
+                                    <label class="setting-label">Minimum Password Length</label>
+                                    <input type="number" class="form-control" id="minPasswordLength" value="8" min="6" max="20">
+                                </div>
+
+                                <div class="setting-group">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="requireSpecialChars" checked>
+                                        <label class="form-check-label" for="requireSpecialChars">
+                                            Require Special Characters
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="requireNumbers" checked>
+                                        <label class="form-check-label" for="requireNumbers">
+                                            Require Numbers
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="session-section">
+                                <h5><i class="fas fa-clock me-2"></i>Session Management</h5>
+                                
+                                <div class="setting-group">
+                                    <label class="setting-label">Session Timeout (minutes)</label>
+                                    <input type="number" class="form-control" id="sessionTimeout" value="30" min="5" max="480">
+                                </div>
+
+                                <div class="setting-group">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="autoLogout" checked>
+                                        <label class="form-check-label" for="autoLogout">
+                                            Auto Logout on Inactivity
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="audit-section">
+                                <h5><i class="fas fa-history me-2"></i>Audit Trail</h5>
+                                
+                                <div class="setting-group">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableAuditLog" checked>
+                                        <label class="form-check-label" for="enableAuditLog">
+                                            Enable Audit Logging
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <label class="setting-label">Log Retention Period (days)</label>
+                                    <input type="number" class="form-control" id="logRetention" value="90" min="30" max="365">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Settings Button -->
+                <div class="settings-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Settings are automatically saved when changed
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" onclick="resetSettings()">
+                                <i class="fas fa-undo me-2"></i>Reset to Defaults
+                            </button>
+                            <button class="btn btn-primary" onclick="saveAllSettings()">
+                                <i class="fas fa-save me-2"></i>Save All Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script src="settings-script.js"></script>
+</body>
+</html>
+
